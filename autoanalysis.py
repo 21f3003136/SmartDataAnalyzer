@@ -4,6 +4,8 @@ import seaborn as sns
 import os
 import openai
 
+
+
 # Set up the AI Proxy token from environment variable
 openai.api_key = os.environ["AIPROXY_TOKEN"]
 
