@@ -1,12 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 import os
 import openai
 
 
 # Set up the AI Proxy token from environment variable
 openai.api_key = os.environ["AIPROXY_TOKEN"]
+
 
 def analyze_data(file_path):
     # Load the dataset
@@ -18,7 +20,12 @@ def analyze_data(file_path):
     
     # Filter numeric columns for correlation analysis
     numeric_df = df.select_dtypes(include='number')
-    correlation_matrix = numeric_df.corr().to_dict() if not numeric_df.empty else {}
+
+    # Check if there are any numeric columns available for correlation
+    if not numeric_df.empty:
+        correlation_matrix = numeric_df.corr().to_dict()
+    else:
+        correlation_matrix = {}
 
     return {
         "summary_stats": summary_stats,
@@ -34,7 +41,7 @@ def visualize_data(df, output_dir):
     # Create a heatmap for the correlation matrix if applicable
     if df.select_dtypes(include='number').shape[1] > 0:
         plt.figure(figsize=(10, 8))
-        sns.heatmap(df.corr(), annot=True, fmt=".2f", cmap='coolwarm')
+        sns.heatmap(df.select_dtypes(include='number').corr(), annot=True, fmt=".2f", cmap='coolwarm')  
         plt.title('Correlation Matrix')
         plt.savefig(os.path.join(output_dir, 'correlation_matrix.png'))
         plt.close()
