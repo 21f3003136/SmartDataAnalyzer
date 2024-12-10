@@ -16,8 +16,9 @@ def analyze_data(file_path):
     summary_stats = df.describe(include='all').to_dict()
     missing_values = df.isnull().sum().to_dict()
     
-    # Create a correlation matrix if applicable
-    correlation_matrix = df.corr().to_dict() if df.select_dtypes(include='number').shape[1] > 0 else {}
+    # Filter numeric columns for correlation analysis
+    numeric_df = df.select_dtypes(include='number')
+    correlation_matrix = numeric_df.corr().to_dict() if not numeric_df.empty else {}
 
     return {
         "summary_stats": summary_stats,
@@ -26,6 +27,8 @@ def analyze_data(file_path):
         "columns": df.columns.tolist(),
         "dtypes": df.dtypes.apply(str).to_dict()
     }
+
+
 
 def visualize_data(df, output_dir):
     # Create a heatmap for the correlation matrix if applicable
