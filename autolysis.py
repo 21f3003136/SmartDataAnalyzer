@@ -5,14 +5,13 @@ import numpy as np
 import os
 import openai
 import requests
+import chardet
 
 # Set up the AI Proxy token from environment variable
 openai.api_key = os.environ["AIPROXY_TOKEN"]
 
 
-def analyze_data(file_path):
-    # Load the dataset
-    df = pd.read_csv(file_path)
+def analyze_data(file_path, df):
 
     # Generate summary statistics
     summary_stats = df.describe(include='all').to_dict()
@@ -84,12 +83,14 @@ def main(file_path):
         os.mkdir(output_dir)
 
     print(output_dir)
-    # Analyze the data
-    analysis_results = analyze_data(file_path)
+    
     encod=encoding(file_path)
     print('abc',encod)
     # Load the data for visualization
     df = pd.read_csv(file_path, encoding=encod)
+
+    # Analyze the data
+    analysis_results = analyze_data(file_path, df)
     
     # Visualize the data
     visualize_data(df, output_dir)
