@@ -4,7 +4,7 @@ import seaborn as sns
 import numpy as np
 import os
 import openai
-
+import requests
 
 # Set up the AI Proxy token from environment variable
 openai.api_key = os.environ["AIPROXY_TOKEN"]
@@ -54,12 +54,19 @@ def generate_story(analysis_results):
     prompt += f"Correlation Matrix: {analysis_results['correlation_matrix']}\n"
     prompt += "Write a narrative story about these findings."
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    
-    return response['choices'][0]['message']['content']
+    AI_TOKEN = os.getenv("AIPROXY_TOKEN")
+    headers = {"Authorization": f"Bearer {AI_TOKEN}", "Content-Type": "application/json"}  
+    data = {
+        "model": "gpt-4o-mini",
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    try:
+        response = requests.post("https://aiproxy.sanand.workers.dev/openai/v1/chat/completions", headers=headers, json=data)
+        response_json = response.json()
+        return response_json["choices"][0]["message"]["content"]
+    except Exception as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
 def save_readme(story, output_dir):
     with open(os.path.join(output_dir, 'README.md'), 'w') as f:
