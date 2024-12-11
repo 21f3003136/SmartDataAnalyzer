@@ -74,8 +74,12 @@ def save_readme(story, output_dir):
         f.write(story)
 
 def main(file_path):
-    output_dir = os.getcwd()
+    output_dir = os.path.join(os.getcwd(), os.path.splitext(file_path)[0])
     
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    print(output_dir)
     # Analyze the data
     analysis_results = analyze_data(file_path)
     
