@@ -35,7 +35,11 @@ def analyze_data(file_path):
         "dtypes": df.dtypes.apply(str).to_dict()
     }
 
-
+def encoding(file_path):
+    with open(file_path, "rb") as files:
+        data = files.read()
+    encod = chardet.detect(data)["encoding"]
+    return encod
 
 def visualize_data(df, output_dir):
     # Create a heatmap for the correlation matrix if applicable
@@ -82,9 +86,10 @@ def main(file_path):
     print(output_dir)
     # Analyze the data
     analysis_results = analyze_data(file_path)
-    
+    encod=encoding(file_path)
+    print('abc',encod)
     # Load the data for visualization
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, encoding=encod)
     
     # Visualize the data
     visualize_data(df, output_dir)
