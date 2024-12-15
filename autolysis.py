@@ -149,7 +149,7 @@ def visualize_data(df, output_dir):
        plt.close()
 
 def generate_story(analysis_results,analysis_results_2):
-   prompt = f"Analyze the following dataset results and is well-structured, using headers, lists, and emphasis appropriately. The narrative must clearly describes the deep understanding of the data, analysis performed, insights gained, and implications.\n\n"
+   prompt = f"Analyze the following dataset results and is well-structured, using headers, lists, and emphasis appropriately. The narrative must clearly describes the deep understanding of the data, analysis performed, insights gained, and implications. Include interesting facts out of the data\n\n"
    prompt += f"Summary Statistics: {analysis_results['summary_stats']}\n"
    prompt += f"Missing Values: {analysis_results['missing_values']}\n"
    prompt += f"Correlation Matrix: {analysis_results['correlation_matrix']}\n"
