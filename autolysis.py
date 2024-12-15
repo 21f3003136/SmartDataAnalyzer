@@ -16,6 +16,7 @@
 # ///
 
 import pandas as pd
+import shutil
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -249,6 +250,10 @@ def save_readme(story, output_dir, img):
        for im in img:
             f.write(f"![{im['description']}]({im['filename']})\n")
 
+   backup_dir = os.path.join(os.getcwd(), 'eval', file_path)
+   shutil.copytree(output_dir, backup_dir)
+   
+        
 def main(file_path):
    output_dir = os.path.join(os.getcwd(), os.path.splitext(file_path)[0])
    
@@ -317,7 +322,7 @@ def main(file_path):
    full_story_content="\n\n".join(story_content_parts)
 
    # Save the story as README.md
-   save_readme(full_story_content, output_dir, img)
+   save_readme(full_story_content, output_dir, img, file_path)
 
 if __name__ == "__main__":
    import sys
