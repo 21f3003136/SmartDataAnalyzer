@@ -190,7 +190,8 @@ def visualize_data(df, output_dir):
        sns.heatmap(df.select_dtypes(include='number').corr(), annot=True, fmt=".2f", cmap='coolwarm')  
        plt.title('Correlation Matrix')
        img_file_name='correlation_matrix.png'
-       plt.savefig(img_file_name, dpi=100)
+       plt.savefig(os.path.join(output_dir, img_file_name), dpi=100)
+
        plt.close()
        img.append({"filename": img_file_name, "description": f"Correlation matrix showing the spread of the all the columns."})
 
@@ -213,7 +214,7 @@ def visualize_data(df, output_dir):
 
     # Save the combined histogram image
    img_file_name='combined_histograms.png'
-   plt.savefig(img_file_name, dpi=100)
+   plt.savefig(os.path.join(output_dir, img_file_name), dpi=100)
    plt.close()
    img.append({"filename": img_file_name, "description": f"Combined Histogram image of all columns of the dataset"})
    return img
