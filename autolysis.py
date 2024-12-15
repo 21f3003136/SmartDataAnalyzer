@@ -26,6 +26,7 @@ import chardet
 from sklearn.ensemble import IsolationForest, RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler, OrdinalEncoder
+from sklearn.model_selection import cross_val_score
 from sklearn.cluster import KMeans
 import statsmodels.api as sm
 import geopandas as gpd
@@ -319,5 +320,5 @@ if __name__ == "__main__":
    if len(sys.argv) != 2:
        print("Usage: uv run autolysis.py dataset.csv")
        sys.exit(1)
-       
+
    main(sys.argv[1])
