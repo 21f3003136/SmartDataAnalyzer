@@ -148,6 +148,27 @@ def visualize_data(df, output_dir):
        plt.savefig(os.path.join(output_dir, 'correlation_matrix.png'))
        plt.close()
 
+   numeric_columns = df.select_dtypes(include='number').columns.tolist()
+
+    # Set up the figure for multiple subplots
+   num_columns = len(numeric_columns)
+   plt.figure(figsize=(12, 4 * num_columns))  # Adjust height based on number of columns
+
+    # Create a histogram for each numeric column
+   for i, col in enumerate(numeric_columns):
+        plt.subplot(num_columns, 1, i + 1)  # Create a subplot for each histogram
+        sns.histplot(df[col], bins=30, kde=True, color='blue', alpha=0.6)  # Plot histogram with KDE
+        plt.title(f'Histogram of {col}')
+        plt.xlabel(col)
+        plt.ylabel('Frequency')
+
+    # Adjust layout to prevent overlap
+   plt.tight_layout()
+
+    # Save the combined histogram image
+   plt.savefig(os.path.join(output_dir, 'combined_histograms.png'))
+   plt.close()
+
 def generate_story(analysis_results,analysis_results_2):
    prompt = f"Analyze the following dataset results and is well-structured, using headers, lists, and emphasis appropriately. The narrative must clearly describes the deep understanding of the data, analysis performed, insights gained, and implications. Include interesting facts out of the data\n\n"
    prompt += f"Summary Statistics: {analysis_results['summary_stats']}\n"
