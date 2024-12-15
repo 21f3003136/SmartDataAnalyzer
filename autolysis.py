@@ -187,7 +187,7 @@ def visualize_data(df, output_dir):
        plt.savefig(os.path.join(output_dir,img_file_name), dpi=100)
 
        plt.close()
-       img.append({"filename": os.path.join(output_dir,img_file_name), "description": f"Correlation matrix showing the spread of the all the columns."})
+       img.append({"filename": os.path.join("",img_file_name), "description": f"Correlation matrix showing the spread of the all the columns."})
 
    numeric_columns = df.select_dtypes(include='number').columns.tolist()
 
@@ -210,7 +210,7 @@ def visualize_data(df, output_dir):
    img_file_name='combined_histograms.png'
    plt.savefig(os.path.join(output_dir, img_file_name), dpi=100)
    plt.close()
-   img.append({"filename": os.path.join(output_dir,img_file_name), "description": f"Combined Histogram image of all columns of the dataset"})
+   img.append({"filename": os.path.join("",img_file_name), "description": f"Combined Histogram image of all columns of the dataset"})
    return img
 
 def generate_story(analysis_results,analysis_results_2,visualize_data_final):
