@@ -180,6 +180,7 @@ def visualize_data(df, output_dir):
    img =[]
    # Create a heatmap for the correlation matrix if applicable
    if df.select_dtypes(include='number').shape[1] > 0:
+       print(output_dir)
        plt.figure(figsize=(10, 8))
        sns.heatmap(df.select_dtypes(include='number').corr(), annot=True, fmt=".2f", cmap='coolwarm')  
        plt.title('Correlation Matrix')
