@@ -214,7 +214,16 @@ def visualize_data(df, output_dir):
    return img
 
 def generate_story(analysis_results,analysis_results_2,visualize_data_final):
-   prompt = f"Analyze the following dataset results and construct a well-structured narrative that includes an engaging introduction, summary of findings, detailed analysis, insights gained, implications for stakeholders, and a thought-provoking conclusion, while using headers, lists, and interesting facts to enhance reader engagement\n"
+   prompt = (
+    "Analyze the following dataset results and construct a comprehensive narrative that includes:\n"
+    "- **Engaging Introduction**: Start with a compelling hook that provides context and highlights the importance of the analysis.\n"
+    "- **Summary of Findings**: Clearly present key statistics, trends, and anomalies, ensuring to explain their significance.\n"
+    "- **In-Depth Analysis**: Provide a thorough examination of the data, integrating results with detailed explanations. Discuss methodologies used and their implications on the findings.\n"
+    "- **Insights Gained**: Highlight critical insights derived from the analysis, connecting them to broader themes or questions.\n"
+    "- **Implications for Stakeholders**: Elaborate on how these findings impact stakeholders and suggest actionable recommendations based on the insights.\n"
+    "- **Thought-Provoking Conclusion**: Summarize key takeaways and pose questions or considerations for future exploration.\n"
+    "Throughout the narrative, use headers, lists, and interesting facts to enhance reader engagement and ensure clarity.\n\n")
+
    prompt += f"Summary Statistics: {analysis_results['summary_stats']}\n"
    prompt += f"Missing Values: {analysis_results['missing_values']}\n"
    prompt += f"Correlation Matrix: {analysis_results['correlation_matrix']}\n"
