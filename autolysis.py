@@ -183,13 +183,16 @@ def network_analysis(df):
     return G
 
 def visualize_data(df, output_dir):
+   img =[]
    # Create a heatmap for the correlation matrix if applicable
    if df.select_dtypes(include='number').shape[1] > 0:
        plt.figure(figsize=(10, 8))
        sns.heatmap(df.select_dtypes(include='number').corr(), annot=True, fmt=".2f", cmap='coolwarm')  
        plt.title('Correlation Matrix')
-       plt.savefig(os.path.join(output_dir, 'correlation_matrix.png'))
+       img_file_name='correlation_matrix.png'
+       plt.savefig(img_file_name, dpi=100)
        plt.close()
+       img.append({"filename": img_file_name, "description": f"Correlation matrix showing the spread of the all the columns."})
 
    numeric_columns = df.select_dtypes(include='number').columns.tolist()
 
@@ -209,10 +212,13 @@ def visualize_data(df, output_dir):
    plt.tight_layout()
 
     # Save the combined histogram image
-   plt.savefig(os.path.join(output_dir, 'combined_histograms.png'))
+   img_file_name='combined_histograms.png'
+   plt.savefig(img_file_name, dpi=100)
    plt.close()
+   img.append({"filename": img_file_name, "description": f"Combined Histogram image of all columns of the dataset"})
+   return img
 
-def generate_story(analysis_results,analysis_results_2):
+def generate_story(analysis_results,analysis_results_2,visualize_data_final):
    prompt = f"Analyze the following dataset results and construct a well-structured narrative that includes an engaging introduction, summary of findings, detailed analysis, insights gained, implications for stakeholders, and a thought-provoking conclusion, while using headers, lists, and interesting facts to enhance reader engagement\n"
    prompt += f"Summary Statistics: {analysis_results['summary_stats']}\n"
    prompt += f"Missing Values: {analysis_results['missing_values']}\n"
@@ -225,6 +231,8 @@ def generate_story(analysis_results,analysis_results_2):
    prompt += f"Geographic datapoints: {analysis_results_2['Geographicdatapoints']}\n"
    prompt += f"Cross Validation Mean MSE: {analysis_results_2['CrossValidataion_mean_mse']}\n"
    prompt += f"Cross Validation Std MSE: {analysis_results_2['CrossValidataion_std_mse']}\n"
+   prompt += f"This visual is generated from dataset: {visualize_data_final}\n"
+   
    AI_TOKEN = os.getenv("AIPROXY_TOKEN")
    headers = {"Authorization": f"Bearer {AI_TOKEN}", "Content-Type": "application/json"}  
    data = {
@@ -240,9 +248,12 @@ def generate_story(analysis_results,analysis_results_2):
        print(f"Error: {e}")
        sys.exit(1)
 
-def save_readme(story, output_dir):
+def save_readme(story, output_dir, img):
    with open(os.path.join(output_dir, 'README.md'), 'w') as f:
        f.write(story)
+       f.write("\n\n## Visualizations\n")
+       for im in img:
+            f.write(f"![{im['description']}]({im['filename']})\n")
 
 def main(file_path):
    output_dir = os.path.join(os.getcwd(), os.path.splitext(file_path)[0])
@@ -289,8 +300,9 @@ def main(file_path):
    network_graph_result = network_analysis(df)
 
    # Visualize the data
-   visualize_data(df, output_dir)
-   
+   img=visualize_data(df, output_dir)
+   visualize_data_final = "\n".join([f"- {im['description']} (see `{im['filename']}`)" for im in img])
+
    # Generate a story from the analysis results including all analyses performed.
    analysis_results_2={ 
        "OutliersDetected": len(outliers_detected),
@@ -303,7 +315,7 @@ def main(file_path):
        "CrossValidataion_std_mse":validate_regression_results[1]
        }
    story_content_parts=[
-       generate_story(analysis_results,analysis_results_2)
+       generate_story(analysis_results,analysis_results_2,visualize_data_final)
    ]
 
    # Conditionally include network graph information if available
@@ -313,12 +325,12 @@ def main(file_path):
    full_story_content="\n\n".join(story_content_parts)
 
    # Save the story as README.md
-   save_readme(full_story_content, output_dir)
+   save_readme(full_story_content, output_dir, img)
 
 if __name__ == "__main__":
    import sys
    if len(sys.argv) != 2:
        print("Usage: uv run autolysis.py dataset.csv")
        sys.exit(1)
-
+       
    main(sys.argv[1])
