@@ -256,7 +256,6 @@ def save_readme(story, output_dir, img, file_path):
    with open(os.path.join(output_dir, 'README.md'), 'w') as f:
        f.write(story)
        f.write("\n\n## Visualizations\n")
-       print(img)
        for im in img:
             f.write(f"![{im['description']}]({im['filename']})\n")
 
