@@ -61,7 +61,7 @@ def regression_analysis(df, target_column):
     X_scaled = scaler.fit_transform(X)
     model = LinearRegression()
     model.fit(X_scaled, y)
-    print('regs')
+    #print('regs')
     return model.coef_, model.intercept_
 
 
@@ -78,14 +78,14 @@ def feature_importance_analysis(df, target_column):
 
     X = df.drop(columns=[target_column])
     y = df[target_column]
-    print(X.head())
+    #print(X.head())
     model = RandomForestRegressor()
 
-    print('imp3')
+    #print('imp3')
     model.fit(X, y)
     importance = model.feature_importances_
     feature_importance = pd.Series(importance, index=X.columns).sort_values(ascending=False)
-    print('imp')
+    #print('imp')
     return feature_importance
 
 
@@ -113,7 +113,7 @@ def geographic_analysis(df):
             lon_col = col
             
     if lat_col is None or lon_col is None:
-        print("Latitude and/or longitude columns not found. Geographic analysis will not be performed.")
+        #print("Latitude and/or longitude columns not found. Geographic analysis will not be performed.")
         return "Latitude and/or longitude columns not found"  # Skip analysis and return None
         
     gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lon_col], df[lat_col]))
@@ -132,7 +132,7 @@ def network_analysis(df):
             target_col = col
             
     if source_col is None or target_col is None:
-        print("Source and/or target columns not found.")
+        #print("Source and/or target columns not found.")
         return None  # Skip analysis and return None
         
     G = nx.from_pandas_edgelist(df, source=source_col, target=target_col)
