@@ -252,8 +252,9 @@ def save_readme(story, output_dir, img, file_path):
 
    backup_dir = os.getcwd()
    shutil.copy(os.path.join(output_dir, 'README.md'), os.path.join(backup_dir, 'README.md'))
-
-        
+   shutil.copy(os.path.join(output_dir, 'combined_histograms.png'), os.path.join(backup_dir, 'combined_histograms.png'))
+   shutil.copy(os.path.join(output_dir, 'correlation_matrix.png'), os.path.join(backup_dir, 'correlation_matrix.png'))
+     
 def main(file_path):
    output_dir = os.path.join(os.getcwd(), os.path.splitext(file_path)[0])
    
