@@ -180,15 +180,14 @@ def visualize_data(df, output_dir):
    img =[]
    # Create a heatmap for the correlation matrix if applicable
    if df.select_dtypes(include='number').shape[1] > 0:
-       print(output_dir)
        plt.figure(figsize=(10, 8))
        sns.heatmap(df.select_dtypes(include='number').corr(), annot=True, fmt=".2f", cmap='coolwarm')  
        plt.title('Correlation Matrix')
        img_file_name='correlation_matrix.png'
-       plt.savefig(os.path.join(output_dir, img_file_name), dpi=100)
+       plt.savefig(os.path.join(output_dir,img_file_name), dpi=100)
 
        plt.close()
-       img.append({"filename": img_file_name, "description": f"Correlation matrix showing the spread of the all the columns."})
+       img.append({"filename": os.path.join(output_dir,img_file_name), "description": f"Correlation matrix showing the spread of the all the columns."})
 
    numeric_columns = df.select_dtypes(include='number').columns.tolist()
 
@@ -211,7 +210,7 @@ def visualize_data(df, output_dir):
    img_file_name='combined_histograms.png'
    plt.savefig(os.path.join(output_dir, img_file_name), dpi=100)
    plt.close()
-   img.append({"filename": img_file_name, "description": f"Combined Histogram image of all columns of the dataset"})
+   img.append({"filename": os.path.join(output_dir,img_file_name), "description": f"Combined Histogram image of all columns of the dataset"})
    return img
 
 def generate_story(analysis_results,analysis_results_2,visualize_data_final):
@@ -257,6 +256,7 @@ def save_readme(story, output_dir, img, file_path):
    with open(os.path.join(output_dir, 'README.md'), 'w') as f:
        f.write(story)
        f.write("\n\n## Visualizations\n")
+       print(img)
        for im in img:
             f.write(f"![{im['description']}]({im['filename']})\n")
 
