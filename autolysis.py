@@ -8,7 +8,7 @@ import requests
 import chardet
 from sklearn.ensemble import IsolationForest, RandomForestRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from sklearn.cluster import KMeans
 import statsmodels.api as sm
 import geopandas as gpd
@@ -49,52 +49,46 @@ def detect_outliers(df):
     return df[outliers == -1]
 
 def regression_analysis(df, target_column):
-    X = df.drop(columns=[target_column])
+    # Drop non-numeric columns from X
+    X = df.drop(columns=[target_column]).select_dtypes(include=[np.number])  # Keep only numeric columns
     y = df[target_column]
+
+    # Check if X is empty after dropping non-numeric columns
+    if X.empty:
+        raise ValueError("No numeric features available for regression analysis.")
 
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
-
     model = LinearRegression()
     model.fit(X_scaled, y)
-
+    print('regs')
     return model.coef_, model.intercept_
 
+
 def feature_importance_analysis(df, target_column):
+    categorical_cols = df.select_dtypes(include=['object']).columns.tolist()
+
+    # Initialize the OrdinalEncoder
+    encoder = OrdinalEncoder()
+
+    # Perform ordinal encoding on categorical columns
+    df_encoded = df.copy()  # Create a copy to preserve original data
+    df_encoded[categorical_cols] = encoder.fit_transform(df[categorical_cols])
+    df=df_encoded
+
     X = df.drop(columns=[target_column])
     y = df[target_column]
-
+    print(X.head())
     model = RandomForestRegressor()
-    model.fit(X, y)
 
+    print('imp3')
+    model.fit(X, y)
     importance = model.feature_importances_
     feature_importance = pd.Series(importance, index=X.columns).sort_values(ascending=False)
-    
+    print('imp')
     return feature_importance
 
-def time_series_analysis(df):
-    time_columns = df.select_dtypes(include=['datetime', 'object']).columns.tolist()
-    
-    if not time_columns:
-        raise ValueError("No suitable time column found in the dataset.")
-    
-    # Assume the first datetime column is the time series column
-    time_column = time_columns[0]
-    
-    # Check for a numerical target column (not datetime)
-    target_columns = df.select_dtypes(include='number').columns.tolist()
-    
-    if not target_columns:
-        raise ValueError("No numerical target column found in the dataset.")
-    
-    target_column = target_columns[0]  # Assume the first numerical column is the target
 
-    df[time_column] = pd.to_datetime(df[time_column])
-    ts_data = df.set_index(time_column)[target_column]
-    
-    decomposition = sm.tsa.seasonal_decompose(ts_data, model='additive')
-    
-    return decomposition
 
 def cluster_analysis(df, n_clusters=3):
     numeric_df = df.select_dtypes(include='number')
@@ -119,7 +113,8 @@ def geographic_analysis(df):
             lon_col = col
             
     if lat_col is None or lon_col is None:
-        raise ValueError("Latitude and/or longitude columns not found.")
+        print("Latitude and/or longitude columns not found. Geographic analysis will not be performed.")
+        return "Latitude and/or longitude columns not found"  # Skip analysis and return None
         
     gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[lon_col], df[lat_col]))
     
@@ -137,7 +132,8 @@ def network_analysis(df):
             target_col = col
             
     if source_col is None or target_col is None:
-        raise ValueError("Source and/or target columns not found.")
+        print("Source and/or target columns not found.")
+        return None  # Skip analysis and return None
         
     G = nx.from_pandas_edgelist(df, source=source_col, target=target_col)
     
@@ -152,12 +148,18 @@ def visualize_data(df, output_dir):
        plt.savefig(os.path.join(output_dir, 'correlation_matrix.png'))
        plt.close()
 
-def generate_story(analysis_results):
-   prompt = f"Analyze the following dataset results:\n\n"
+def generate_story(analysis_results,analysis_results_2):
+   prompt = f"Analyze the following dataset results and prepare a proper narrative of the given dataset with interesting facts and conclusions:\n\n"
    prompt += f"Summary Statistics: {analysis_results['summary_stats']}\n"
    prompt += f"Missing Values: {analysis_results['missing_values']}\n"
    prompt += f"Correlation Matrix: {analysis_results['correlation_matrix']}\n"
-   
+   prompt += f"Outliers Detected: {analysis_results_2['OutliersDetected']}\n"
+   prompt += f"Regression Coeffecient: {analysis_results_2['RegressionCoeff']}\n"
+   prompt += f"Regression intercept: {analysis_results_2['Regressionintercept']}\n"
+   prompt += f"Feature importance: {analysis_results_2['Featureimportance']}\n"
+   prompt += f"Cluster labels: {analysis_results_2['Clusterlabels']}\n"
+   prompt += f"Geographic datapoints: {analysis_results_2['Geographicdatapoints']}\n"
+
    AI_TOKEN = os.getenv("AIPROXY_TOKEN")
    headers = {"Authorization": f"Bearer {AI_TOKEN}", "Content-Type": "application/json"}  
    data = {
@@ -192,6 +194,8 @@ def main(file_path):
    # Analyze the data
    analysis_results = analyze_data(df)
 
+   df.dropna(inplace=True)
+
    # Outlier detection
    outliers_detected = detect_outliers(df)
 
@@ -201,16 +205,13 @@ def main(file_path):
    if not target_columns:
        raise ValueError("No numerical target column found for regression analysis.")
        
-   selected_target_column = target_columns[0]  # Assume the first numerical column is the target
+   selected_target_column = target_columns[-1]  # Assume the first numerical column is the target
 
    # Regression analysis using the detected target column
    regression_results = regression_analysis(df, selected_target_column)
 
    # Feature importance analysis (using the same detected target column)
    feature_importance_results = feature_importance_analysis(df, selected_target_column)
-
-   # Time series analysis (dynamically find a time column)
-   time_series_decomposition_result = time_series_analysis(df)
 
    # Cluster analysis (default to 3 clusters)
    cluster_labels_result = cluster_analysis(df)
@@ -225,17 +226,21 @@ def main(file_path):
    visualize_data(df, output_dir)
    
    # Generate a story from the analysis results including all analyses performed.
+   analysis_results_2={ 
+       "OutliersDetected": len(outliers_detected),
+       "RegressionCoeff": regression_results[0],
+       "Regressionintercept": regression_results[1],
+       "Featureimportance": feature_importance_results.to_dict(),
+       "Clusterlabels": cluster_labels_result,
+       "Geographicdatapoints": geographic_data_result
+       }
    story_content_parts=[
-       generate_story(analysis_results),
-       f"Outliers detected: {len(outliers_detected)}",
-       f"Regression coefficients: {regression_results[0]}",
-       f"Regression intercept: {regression_results[1]}",
-       f"Feature importance: {feature_importance_results.to_dict()}",
-       f"Time series decomposition result: {time_series_decomposition_result}",
-       f"Cluster labels: {cluster_labels_result}",
-       f"Geographic data points: {geographic_data_result}",
-       f"Network graph nodes: {network_graph_result.number_of_nodes()} edges: {network_graph_result.number_of_edges()}"
+       generate_story(analysis_results,analysis_results_2)
    ]
+
+   # Conditionally include network graph information if available
+   if network_graph_result is not None:
+       story_content_parts.append(f"Network graph nodes: {network_graph_result.number_of_nodes()} edges: {network_graph_result.number_of_edges()}")
    
    full_story_content="\n\n".join(story_content_parts)
 
