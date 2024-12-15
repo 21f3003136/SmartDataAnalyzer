@@ -78,6 +78,8 @@ def regression_analysis(df, target_column):
     X_scaled = scaler.fit_transform(X)
     model = LinearRegression()
     model.fit(X_scaled, y)
+
+    
     #print('regs')
     return model.coef_, model.intercept_
 
@@ -105,6 +107,29 @@ def feature_importance_analysis(df, target_column):
     #print('imp')
     return feature_importance
 
+def validate_regression_model(df,target_column):
+    # Drop non-numeric columns from X
+    X = df.drop(columns=[target_column]).select_dtypes(include=[np.number])  # Keep only numeric columns
+    y = df[target_column]
+
+    # Check if X is empty after dropping non-numeric columns
+    if X.empty:
+        raise ValueError("No numeric features available for regression analysis.")
+
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    model = LinearRegression()
+    
+    # Perform cross-validation
+    scores = cross_val_score(model, X_scaled, y, cv=5, scoring='neg_mean_squared_error')
+    
+    # Calculate mean and standard deviation of the scores
+    mse_scores = -scores  # Convert scores to positive MSE
+    mean_mse = mse_scores.mean()
+    std_mse = mse_scores.std()
+    
+    return mean_mse, std_mse
 
 
 def cluster_analysis(df, n_clusters=3):
@@ -197,7 +222,8 @@ def generate_story(analysis_results,analysis_results_2):
    prompt += f"Feature importance: {analysis_results_2['Featureimportance']}\n"
    prompt += f"Cluster labels: {analysis_results_2['Clusterlabels']}\n"
    prompt += f"Geographic datapoints: {analysis_results_2['Geographicdatapoints']}\n"
-
+   prompt += f"Cross Validation Mean MSE: {analysis_results_2['CrossValidataion_mean_mse']}\n"
+   prompt += f"Cross Validation Std MSE: {analysis_results_2['CrossValidataion_std_mse']}\n"
    AI_TOKEN = os.getenv("AIPROXY_TOKEN")
    headers = {"Authorization": f"Bearer {AI_TOKEN}", "Content-Type": "application/json"}  
    data = {
@@ -250,6 +276,8 @@ def main(file_path):
    # Feature importance analysis (using the same detected target column)
    feature_importance_results = feature_importance_analysis(df, selected_target_column)
 
+   validate_regression_results = validate_regression_model(df, selected_target_column)
+
    # Cluster analysis (default to 3 clusters)
    cluster_labels_result = cluster_analysis(df)
 
@@ -269,7 +297,9 @@ def main(file_path):
        "Regressionintercept": regression_results[1],
        "Featureimportance": feature_importance_results.to_dict(),
        "Clusterlabels": cluster_labels_result,
-       "Geographicdatapoints": geographic_data_result
+       "Geographicdatapoints": geographic_data_result,
+       "CrossValidataion_mean_mse":validate_regression_results[0],
+       "CrossValidataion_std_mse":validate_regression_results[1]
        }
    story_content_parts=[
        generate_story(analysis_results,analysis_results_2)
