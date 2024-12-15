@@ -55,5 +55,5 @@ As we navigate an ever-evolving media landscape, the interplay between quality, 
 What further analyses could illuminate the shifting dynamics of viewer preferences? How will emerging technologies, like AI and machine learning, reshape content creation and distribution strategies? Addressing these questions could pave the way for deeper insights and more strategic engagement with audiences in the future.
 
 ## Visualizations
-![Correlation matrix showing the spread of the all the columns.](media/correlation_matrix.png)
-![Combined Histogram image of all columns of the dataset](media/combined_histograms.png)
+![Correlation matrix showing the spread of the all the columns.](correlation_matrix.png)
+![Combined Histogram image of all columns of the dataset](combined_histograms.png)
