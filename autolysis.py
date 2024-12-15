@@ -316,9 +316,8 @@ def main(file_path):
 
 if __name__ == "__main__":
    import sys
-   
    if len(sys.argv) != 2:
        print("Usage: uv run autolysis.py dataset.csv")
        sys.exit(1)
-   
+       
    main(sys.argv[1])
