@@ -1,3 +1,20 @@
+# /// script
+# requires-python = ">=3.7"
+# dependencies = [
+#     "pandas",
+#     "matplotlib",
+#     "seaborn",
+#     "numpy",
+#     "openai",
+#     "requests",
+#     "chardet",
+#     "scikit-learn",
+#     "statsmodels",
+#     "geopandas",
+#     "networkx"
+# ]
+# ///
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
