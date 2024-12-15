@@ -1,69 +1,62 @@
-# Dataset Analysis
-This analysis delves into a dataset that comprises multi-dimensional information pertaining to various countries, encapsulating different socio-economic and well-being indicators over a period from 2005 to 2023. 
+# Exploring the Happiness Factors in Global Quality of Life: A Data Analysis Narrative
 
-## Overview of the Dataset
-- **Total Entries:** 2363
-- **Unique Countries:** 165 
-- **Countries Occurring Most Frequently:** Argentina (18 occurrences)
+In an increasingly interconnected world, the measure of happiness transcends mere economic indicators. The intricacies of well-being encompass emotional states, social structures, and personal freedoms. This analysis dives deep into a dataset spanning 2363 entries across 165 countries, analyzing various determinants influencing life satisfaction—from economic conditions to social support systems. By distilling this information, we aim to unveil critical patterns and insights that can serve stakeholders in policy-making, business, and community development.
 
-### Summary Statistics
-The key summary statistics for important metrics are as follows:
+## Summary of Findings
 
-| Metric                           | Count      | Mean        | Standard Deviation | Minimum | 25%    | Median (50%) | 75%    | Maximum |
-|----------------------------------|------------|-------------|--------------------|---------|--------|---------------|--------|---------|
-| **Life Ladder**                  | 2363       | 5.48        | 1.13               | 1.28    | 4.65   | 5.45         | 6.32   | 8.02    |
-| **Log GDP per capita**           | 2335       | 9.40        | 1.15               | 5.53    | 8.51   | 9.50         | 10.39  | 11.68   |
-| **Social Support**               | 2350       | 0.81        | 0.12               | 0.23    | 0.74   | 0.83         | 0.90   | 0.99    |
-| **Healthy Life Expectancy**      | 2300       | 63.40       | 6.84               | 6.72    | 59.20  | 65.10        | 68.55  | 74.60   |
-| **Freedom to Make Life Choices** | 2327       | 0.75        | 0.14               | 0.23    | 0.66   | 0.77         | 0.86   | 0.99    |
-| **Generosity**                   | 2282       | 0.0001      | 0.16               | -0.34   | -0.11  | -0.02        | 0.09   | 0.70    |
-| **Perceptions of Corruption**    | 2238       | 0.74        | 0.18               | 0.04    | 0.69   | 0.80         | 0.87   | 0.98    |
-| **Positive Affect**              | 2339       | 0.65        | 0.11               | 0.18    | 0.57   | 0.66         | 0.74   | 0.88    |
-| **Negative Affect**              | 2347       | 0.27        | 0.09               | 0.08    | 0.21   | 0.26         | 0.33   | 0.71    |
+- **Key Variables Analyzed**: Life Ladder (happiness score), Log GDP per capita, Social Support, Healthy Life Expectancy at Birth, Freedom to Make Life Choices, Generosity, Perceptions of Corruption, Positive Affect, Negative Affect.
+- **Demographics**: The dominant country represented is Argentina with 18 entries.
+- **Average Life Ladder Score**: 5.48, highlighting moderate levels of reported happiness across the dataset.
+- **Correlations**: Significant positive correlations exist between Life Ladder and Log GDP per capita (0.78), Social Support (0.72), and Healthy Life Expectancy (0.71), while perceptions of corruption exhibit a negative correlation (-0.43).
 
-**Interesting Insights:**
-- The average **Life Ladder** score of **5.48** indicates a moderate level of life satisfaction among the surveyed countries.
-- The maximum **Log GDP per capita** of **11.68** highlights a significant disparity in economic performance across countries.
-- **Healthy Life Expectancy** averages at **63.4 years**, which could be used to measure a population's health status and efficiency in utilizing healthcare resources.
+## Detailed Analysis
 
-## Missing Values
-The dataset contained various missing values across different metrics, notably:
-- **Log GDP per capita:** 28 missing values
-- **Social support:** 13 missing values
-- **Healthy life expectancy at birth:** 63 missing values
+### Statistical Overview
 
-Understanding the cause of these missing entries is crucial as they could bias analysis or lead to incomplete insights.
+The dataset exhibits the following key statistics:
 
-## Correlation Analysis
-A **correlation matrix** was computed to understand the relationships between variables. 
+- **Life Ladder**: Mean = 5.48, demonstrating that, on average, individuals report moderate happiness. The variation spans from 1.281 to 8.019.
+- **Log GDP per Capita**: Mean = 9.40, indicating robust economic indicators suggestive of wealth distribution.
+- **Freedom**: Averaging at 0.75, this highlights a substantial sense of agency among respondents.
+- **Healthy Life expectancy**: The average is a commendable 63.4 years, reflecting a decent standard of health and wellness.
 
-### Key Correlations:
-- **Life Ladder and Log GDP per capita:** Strong positive correlation (0.78).
-- **Life Ladder and Social Support:** Also a strong correlation (0.72).
-- **Freedom to Make Life Choices and Life Ladder:** Positive correlation (0.54), indicating that countries where people feel they have more freedom also report higher life satisfaction.
-- **Negative Affect and Life Ladder:** Negative correlation (-0.35), showing that increased negative emotions are associated with lower life satisfaction.
+#### Missing Values
+The dataset contains missing data in multiple fields, most notably in ‘Generosity’ and ‘Perceptions of Corruption,’ which were missing in 81 and 125 entries respectively, emphasizing areas where data completeness can be improved.
 
-These correlations imply that economic prosperity and social networks play a substantial role in overall well-being, yet factors like freedom and anxiety levels also significantly contribute to life satisfaction.
+### Correlation Insights
 
-## Outliers
-A total of **105 outliers** were detected across various metrics, suggesting the presence of countries or data points that significantly differ from the mean. Proper handling of these outliers is necessary, as they may influence results and interpretations.
+A detailed examination of the correlation matrix reveals several strong relationships:
 
-## Regression Analysis
-The regression coefficients indicate how much each feature influences the Life Ladder score. The most significant predictors include:
-- **Social Support:** (0.018)
-- **Healthy Life Expectancy:** (0.020)
+- **Log GDP per Capita and Life Ladder**: Strongest correlation suggesting that increased economic wealth contributes significantly to perceived life satisfaction.
+- **Positive Affect and Life Ladder**: Indicates that emotional well-being substantially influences overall happiness.
 
-With a regression intercept of **0.2748**, the findings indicate that higher social support and better health correlate positively with life satisfaction.
+### Regression Analysis
 
-## Feature Importance
-In terms of feature importance for predicting life satisfaction:
-- **Social Support** ranks highest at **26.43%**
-- **Healthy Life Expectancy** and **Log GDP per capita** follow closely.
+The regression analysis produced a coefficient reflecting the weighted contribution of each factor towards life satisfaction. Notably:
 
-### Implications of Findings:
-1. **Policy Making:** Emphasizing social support systems could enhance overall life satisfaction levels. 
-2. **Healthcare Initiatives:** Improving healthcare access may boost healthy life expectancy, consequently increasing happiness.
-3. **Economic Strategies:** Addressing economic disparities while considering both GDP and social support can significantly elevate life satisfaction.
+- **Feature Importance**: Social Support emerged as the most significant positive contributor to happiness, reinforcing the importance of community and relationships.
+- **Negative Affect**: Conversely, high levels of negative emotions correlate strongly with lower happiness scores.
+
+## Insights Gained
+
+This analytical exercise reinforces the understanding that happiness is a multi-dimensional construct influenced by both emotional and environmental factors. Key insights include:
+
+1. **Economic Growth is Not Enough**: While GDP plays a significant role, the emotional and social factors such as support structures, personal freedom, and health are equally critical.
+2. **Community Matters**: Countries with robust social support networks show a strong positive correlation with happiness, emphasizing the need for communal investments.
+3. **Perception of Corruption**: Notably influences happiness, bringing forth the importance of transparent governmental practices.
+
+## Implications for Stakeholders
+
+- **Policy Makers**: This analysis highlights the need for holistic policies that address not only economic factors but also social well-being, mental health support, and governance integrity.
+- **Businesses**: Organizations can benefit from understanding these dynamics to foster workplace cultures that enhance employee happiness through social engagement and mental health initiatives.
+- **NGOs and Community Organizations**: Leveraging insights on social support can aid in designing effective programs aimed at boosting community ties and overall happiness.
 
 ## Conclusion
-This dataset provides valuable insights into the relationships between economic conditions, social factors, and overall well-being across different countries. The presence of notable correlations signifies the interdependence of these metrics, providing a framework for policymakers aimed at enhancing the quality of life in their nations. Enhanced focus on social support and well-being factors could catalyze improvements in life satisfaction globally.
+
+In a world increasingly seeking to measure the unmeasurable, our understanding of the nuances of happiness becomes paramount. This analysis underscores that happiness is multifaceted, requiring concerted efforts to enhance social structures alongside economic frameworks. As stakeholders like governments, businesses, and community organizations engage with these insights, the potential to foster a more satisfied and healthier global population becomes an attainable goal. In the end, fostering happiness is not merely a personal journey but a collective mission that benefits all facets of society. 
+
+Let us continue to ask: how can we further integrate these insights into actionable strategies to create better living conditions and happiness for future generations?
+
+## Visualizations
+![Correlation matrix showing the spread of the all the columns.](correlation_matrix.png)
+![Combined Histogram image of all columns of the dataset](combined_histograms.png)
