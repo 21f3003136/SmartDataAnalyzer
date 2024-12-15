@@ -250,7 +250,8 @@ def save_readme(story, output_dir, img, file_path):
        for im in img:
             f.write(f"![{im['description']}]({im['filename']})\n")
 
-   backup_dir = os.path.join(os.getcwd(), 'README.md')
+   backup_dir = os.path.join(os.getcwd(),".csv" 'README.md')
+   shutil.copy(os.path.join(output_dir, 'README.md'), os.path.join(backup_dir, 'README.md'))
 
         
 def main(file_path):
