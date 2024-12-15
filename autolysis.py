@@ -243,7 +243,7 @@ def generate_story(analysis_results,analysis_results_2,visualize_data_final):
        print(f"Error: {e}")
        sys.exit(1)
 
-def save_readme(story, output_dir, img):
+def save_readme(story, output_dir, img, file_path):
    with open(os.path.join(output_dir, 'README.md'), 'w') as f:
        f.write(story)
        f.write("\n\n## Visualizations\n")
@@ -252,7 +252,7 @@ def save_readme(story, output_dir, img):
 
    backup_dir = os.path.join(os.getcwd(), 'eval', file_path)
    shutil.copytree(output_dir, backup_dir)
-   
+
         
 def main(file_path):
    output_dir = os.path.join(os.getcwd(), os.path.splitext(file_path)[0])
