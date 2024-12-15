@@ -198,7 +198,6 @@ def generate_story(analysis_results,analysis_results_2):
 
 def save_readme(story, output_dir):
    with open(os.path.join(output_dir, 'README.md'), 'w') as f:
-       f.write("# Data Analysis Report\n\n")
        f.write(story)
 
 def main(file_path):
